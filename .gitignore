@@ -20,6 +20,8 @@ ENV/
 *.swp
 *.swo
 
-# ОС
 .DS_Store
 Thumbs.db
+
+
+.example.test.yaml
