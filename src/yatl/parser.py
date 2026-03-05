@@ -9,7 +9,7 @@ def check_expectations(response, expect_spec):
     expected_status = expect_spec.get("status")
     if expected_status is not None and response.status_code != expected_status:
         raise AssertionError(
-            f"Ожидался статус {expected_status}, получен {response.status_code}"
+            f"Expected status {expected_status}, got {response.status_code}"
         )
 
     expected_json = expect_spec.get("json")
@@ -17,14 +17,14 @@ def check_expectations(response, expect_spec):
         try:
             resp_json = response.json()
         except json.JSONDecodeError:
-            raise AssertionError("Ответ не является JSON, но ожидался JSON")
+            raise AssertionError("Response is not JSON, but JSON was expected")
 
         for key, value in expected_json.items():
             if key not in resp_json:
-                raise AssertionError(f"В ответе отсутствует ключ '{key}'")
+                raise AssertionError(f"Key '{key}' is missing in response")
             if resp_json[key] != value:
                 raise AssertionError(
-                    f"По ключу '{key}' ожидалось '{value}', получено '{resp_json[key]}'"
+                    f"For key '{key}' expected '{value}', got '{resp_json[key]}'"
                 )
 
 
@@ -61,7 +61,7 @@ def run_step(step, context):
         check_expectations(response, resolved_step["expect"])
 
     if "extract" in resolved_step:
-        extracted = data_extractor.extract()
+        extracted = data_extractor.extract(response, resolved_step["extract"])
         context.update(extracted)
 
     return context
@@ -91,4 +91,10 @@ def run_test(yaml_path):
 
 
 if __name__ == "__main__":
-    run_test("tests/ping.test.yaml")
+    import sys
+
+    if len(sys.argv) > 1:
+        yaml_path = sys.argv[1]
+    else:
+        yaml_path = "tests/example.test.yaml"
+    run_test(yaml_path)
