@@ -1,6 +1,5 @@
 import yaml
 import requests
-import json
 from render import TemplateRenderer
 from extractor import DataExtractor
 from validator import ResponseValidator
