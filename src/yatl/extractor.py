@@ -1,4 +1,11 @@
 from requests import Response
+from enum import Enum
+
+
+class ContentType(Enum):
+    JSON = "application/json"
+    HTML = "text/html"
+    XML = "application/xml"
 
 
 class DataExtractor:
@@ -7,7 +14,7 @@ class DataExtractor:
 
     def extract(self, response: Response, extract_spec: dict):
         extracted = {}
-        if response.headers.get("content-type") == "application/json":
+        if response.headers.get("content-type") == ContentType.JSON.value:
             resp_json = response.json()
 
             for key, path in extract_spec.items():
@@ -21,5 +28,10 @@ class DataExtractor:
                         extracted[key] = resp_json[path]
                     else:
                         raise ValueError(f"Failed to extract '{key}' at path '{path}'")
+        elif response.headers.get("content-type") == ContentType.HTML.value:
+            pass
 
-            return extracted
+        elif response.headers.get("content-type") == ContentType.XML.value:
+            pass
+
+        return extracted

@@ -7,5 +7,8 @@ format:
 run_server:
 	poetry run python src/yatl/server.py
 
-run_tests:
+tests_yaml:
 	poetry run python src/yatl/run.py
+
+tests:
+	poetry run pytest
