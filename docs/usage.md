@@ -16,8 +16,6 @@ YATL is a lightweight testing framework designed for API testing using YAML-base
 
 ## Getting Started
 
-```
-
 ## Test Structure
 
 A YATL test file is a YAML document with the following top-level keys:
