@@ -57,6 +57,20 @@ class Runner:
         with open(yaml_path, "r", encoding="utf-8") as f:
             return yaml.safe_load(f)
 
+    def _is_skipped(self, test_spec: dict):
+        """Checks if a test is skipped based on the "scip" flag.
+
+        Args:
+            test_spec: The parsed YAML dictionary.
+
+        Returns:
+            True if the test is skipped, False otherwise.
+        """
+        if test_spec.get("scip", False):
+            print(f"Test {test_spec.get('name', '')} skipped")
+            return True
+        return False
+
     def run_test(self, yaml_path: str):
         """Executes a single test file.
 
@@ -71,8 +85,7 @@ class Runner:
         if test_spec is None:
             return
         context = self.create_context(test_spec)
-        if context.get("scip", False):
-            print(test_spec.get("name", "") + " skipped")
+        if self._is_skipped(test_spec):
             return
         print(f"Run test: {test_spec.get('name', '')}")
         steps = test_spec.get("steps", [])
