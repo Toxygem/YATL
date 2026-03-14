@@ -1,5 +1,5 @@
 from requests import Response
-from typing import Any, Dict
+from typing import Any
 import json
 from lxml import etree
 
@@ -12,7 +12,7 @@ class ResponseValidator:
     messages.
     """
 
-    def __init__(self, response: Response, expect_spec: Dict[str, Any]):
+    def __init__(self, response: Response, expect_spec: dict[str, Any]):
         """Initializes the validator with a response and expectation spec.
 
         Args:
@@ -83,7 +83,7 @@ class ResponseValidator:
                         f"Header '{key}' expected '{norm_expected}', got '{norm_actual}' (original: '{actual}')"
                     )
 
-    def _validate_json_body(self, expected_json: Dict[str, Any]):
+    def _validate_json_body(self, expected_json: dict[str, Any]):
         """Validates that the JSON response matches the expected structure.
 
         Args:
@@ -101,7 +101,7 @@ class ResponseValidator:
         self._validate_json_response(data, expected_json)
 
     def _validate_json_response(
-        self, data: Dict[str, Any], expected_json: Dict[str, Any]
+        self, data: dict[str, Any], expected_json: dict[str, Any]
     ):
         """Recursively validates a JSON object against an expected dictionary.
 
@@ -122,7 +122,7 @@ class ResponseValidator:
                     f"For key '{key}' expected '{value}', got '{data[key]}'"
                 )
 
-    def _validate_xml_body(self, expected_xml: Dict[str, Any]):
+    def _validate_xml_body(self, expected_xml: dict[str, Any]):
         """Validates that the XML response contains elements with expected text.
 
         Args:

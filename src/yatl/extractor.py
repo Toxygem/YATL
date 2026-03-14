@@ -1,5 +1,5 @@
 from requests import Response
-from typing import Any, Dict
+from typing import Any
 import json
 import re
 from lxml import etree
@@ -54,8 +54,8 @@ class DataExtractor:
     def _extract_json(
         self,
         response: Response,
-        extract_spec: Dict[str, Any],
-    ) -> Dict[str, Any]:
+        extract_spec: dict[str, Any],
+    ) -> dict[str, Any]:
         """Extracts fields from a JSON response according to the specification.
 
         Args:
@@ -93,8 +93,8 @@ class DataExtractor:
         return extracted
 
     def _extract_xml(
-        self, response: Response, extract_spec: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, response: Response, extract_spec: dict[str, Any]
+    ) -> dict[str, Any]:
         """Extracts fields from an XML response using XPath or tag names.
 
         Args:
@@ -129,8 +129,8 @@ class DataExtractor:
         return extracted
 
     def _extract_text(
-        self, response: Response, extract_spec: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, response: Response, extract_spec: dict[str, Any]
+    ) -> dict[str, Any]:
         """Extracts substrings from a plain-text or HTML response.
 
         Args:
@@ -199,8 +199,8 @@ class DataExtractor:
         return "text"
 
     def extract(
-        self, response: Response, extract_spec: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, response: Response, extract_spec: dict[str, Any]
+    ) -> dict[str, Any]:
         """Main extraction entry point.
 
         Determines the content type of the response and delegates to the

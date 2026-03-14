@@ -58,7 +58,7 @@ class Runner:
         with open(yaml_path, "r", encoding="utf-8") as f:
             return yaml.safe_load(f)
 
-    def _is_skipped_test(self, test_spec: dict, result_info):
+    def _is_skipped_test(self, test_spec: dict, result_info: list[str]):
         """Checks if a test is skipped based on the "scip" flag.
 
         Args:
@@ -72,7 +72,7 @@ class Runner:
             return True
         return False
 
-    def _is_skipped_step(self, step: dict, result_info):
+    def _is_skipped_step(self, step: dict, result_info: list[str]):
         """Checks if a step is skipped based on the "skip" flag.
 
         Args:

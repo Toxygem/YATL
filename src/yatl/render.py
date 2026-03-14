@@ -1,5 +1,5 @@
 from jinja2 import Template
-from typing import Any, Dict
+from typing import Any
 import hashlib
 
 
@@ -13,7 +13,7 @@ class TemplateRenderer:
 
     def __init__(self):
         """Initializes the renderer with an empty template cache."""
-        self._template_cache: Dict[str, Template] = {}
+        self._template_cache: dict[str, Template] = {}
 
     def _get_template(self, template_str: str) -> Template:
         """Retrieves a compiled Jinja2 template from the cache, compiling if needed.
@@ -32,7 +32,7 @@ class TemplateRenderer:
             self._template_cache[key] = Template(template_str)
         return self._template_cache[key]
 
-    def render_data(self, data: Any, context: Dict[str, Any]) -> Any:
+    def render_data(self, data: Any, context: dict[str, Any]) -> Any:
         """Recursively renders all template strings in a data structure.
 
         Strings are treated as Jinja2 templates and rendered with the context.
