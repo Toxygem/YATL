@@ -1,26 +1,9 @@
-from src.yatl.run import Runner
-from src.yatl.extractor import DataExtractor
-from src.yatl.render import TemplateRenderer
 from src.yatl.utils import create_context
+import pytest
 
 
-def test_create_context_with_valid_data_returns_context():
-    data = {
-        "base_url": "https://yandex.ru",
-        "name": "ping",
-        "steps": [
-            {
-                "expect": {"status": 200},
-                "name": "ok_test",
-                "request": {"method": "GET"},
-            },
-            {
-                "expect": {"status": 404},
-                "name": "not_found_test",
-                "request": {"method": "GET", "url": "/not_found"},
-            },
-        ],
-    }
+def test_create_context_with_valid_data_returns_context(data):
+    "Test that create_context returns a context with valid data."
     context = create_context(data)
     assert context is not None
     assert context["base_url"] == "https://yandex.ru"
@@ -28,19 +11,14 @@ def test_create_context_with_valid_data_returns_context():
 
 
 def test_create_context_with_empty_data_returns_empty_context():
+    "Test that create_context returns an empty context with empty data."
     context = create_context({})
     assert len(context) == 0
 
 
-def test_is_skipped_test_returns_true_if_test_is_skipped():
-    data = {"skip": True}
-    runner = Runner(DataExtractor(), TemplateRenderer())
+@pytest.mark.parametrize("expected", [True, False])
+def test_is_skipped_test(expected, runner):
+    "Test that is_skipped_test returns True if test is skipped."
+    data = {"skip": expected}
     context = create_context(data)
-    assert runner._is_skipped_test(context) is True
-
-
-def test_is_skipped_test_returns_false_if_test_is_not_skipped():
-    data = {"skip": False}
-    runner = Runner(DataExtractor(), TemplateRenderer())
-    context = create_context(data)
-    assert runner._is_skipped_test(context) is False
+    assert runner._is_skipped_test(context) is expected

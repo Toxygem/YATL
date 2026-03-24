@@ -1,6 +1,6 @@
 name: Base API tests with extract
 base_url: http://localhost:8000
-skip: true
+skip: false
 
 steps:
   - name: Create user and extract ID
@@ -17,4 +17,4 @@ steps:
         json:
           "info.email": "alice@example.com"
           "message": "User created"
-      status: 200 
+      status: 200
