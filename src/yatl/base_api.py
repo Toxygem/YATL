@@ -23,7 +23,10 @@ class User(BaseModel):
 @app.post("/users")
 def create_user(user: User):
     users[user.id] = {"name": user.name, "info": {"email": user.email}}
-    return {"message": "User created", "info": {"email": user.email, "name": user.name}}
+    return {
+        "message": "User created",
+        "info": {"email": user.email, "name": user.name, "id": user.id},
+    }
 
 
 @app.get("/users/{user_id}")
@@ -47,11 +50,6 @@ def get_text():
     return Response(
         content="Hello, this is plain text response.", media_type="text/plain"
     )
-
-
-@app.post("/text")
-def post_text(request: dict):
-    return Response(content="Received: " + str(request), media_type="text/plain")
 
 
 @app.get("/hello")

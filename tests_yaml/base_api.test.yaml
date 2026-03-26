@@ -18,3 +18,15 @@ steps:
           "info.email": "alice@example.com"
           "message": "User created"
       status: 200
+    extract:
+      user_id: info.id
+
+  - name: Get user and extract email
+    request:
+      method: GET
+      url: /users/{{ user_id }}
+    expect:
+      body:
+        json:
+          "info.email": "alice@example.com"
+      status: 200

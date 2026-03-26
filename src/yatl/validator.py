@@ -2,6 +2,7 @@ from requests import Response
 from typing import Any
 import json
 from lxml import etree
+from .utils import content_type, get_nested_value
 
 
 class ResponseValidator:
@@ -21,16 +22,6 @@ class ResponseValidator:
         """
         self.response = response
         self.expect_spec = expect_spec
-
-    def _content_type(self) -> str:
-        """Extracts the media type from the response's Content-Type header.
-
-        Returns:
-            The media type without parameters, lowercased.
-            If the header is missing, returns an empty string.
-        """
-        ct = self.response.headers.get("content-type", "")
-        return ct.split(";")[0].strip().lower()
 
     def _validate_status(self):
         """Validates that the response status code matches the expected one.
@@ -100,34 +91,12 @@ class ResponseValidator:
             raise AssertionError("Response is not valid JSON")
         self._validate_json_response(data, expected_json)
 
-    def _get_nested_value(self, data: Any, path: str) -> Any:
-        """Retrieve a value from a nested dict using dot notation.
-
-        Args:
-            data: A dictionary (or list) containing the data.
-            path: A dot-separated string representing the path (e.g., "user.email").
-
-        Returns:
-            The value at the given path.
-
-        Raises:
-            ValueError: If any component of the path does not exist.
-        """
-        keys = path.split(".")
-        current = data
-        for key in keys:
-            if isinstance(current, dict) and key in current:
-                current = current[key]
-            else:
-                raise ValueError(f"Path component '{key}' not found in {current}")
-        return current
-
     def _validate_json_response(
         self, data: dict[str, Any], expected_json: dict[str, Any]
     ):
         """Recursively validates a JSON object against an expected dictionary.
 
-        Supports dot‑notation keys for validating deep nested fields.
+        Supports dot-notation keys for validating deep nested fields.
 
         Args:
             data: The actual JSON dictionary (or sub-dictionary).
@@ -140,7 +109,7 @@ class ResponseValidator:
             if "." in key:
                 # Dot notation path
                 try:
-                    actual = self._get_nested_value(data, key)
+                    actual = get_nested_value(data, key)
                 except ValueError as e:
                     raise AssertionError(f"Path '{key}' not found in response: {e}")
                 if actual != expected_value:
@@ -215,12 +184,12 @@ class ResponseValidator:
         if body_spec is None:
             return
 
-        content_type = self._content_type()
-        if "json" in content_type and "json" in body_spec:
+        cnt_type = content_type(response=self.response)
+        if "json" in cnt_type and "json" in body_spec:
             self._validate_json_body(body_spec["json"])
-        elif "xml" in content_type and "xml" in body_spec:
+        elif "xml" in cnt_type and "xml" in body_spec:
             self._validate_xml_body(body_spec["xml"])
-        elif content_type.startswith("text/") and "text" in body_spec:
+        elif cnt_type.startswith("text/") and "text" in body_spec:
             self._validate_text_body(body_spec["text"])
         else:
             # Fallback: try to validate as JSON if body_spec is dict
@@ -231,5 +200,5 @@ class ResponseValidator:
                 self._validate_text_body(body_spec["text"])
             else:
                 raise AssertionError(
-                    f"Unsupported body validation for content-type: {content_type}"
+                    f"Unsupported body validation for content-type: {cnt_type}"
                 )

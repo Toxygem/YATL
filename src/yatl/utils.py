@@ -1,6 +1,8 @@
 from itertools import takewhile
 import yaml
 import os
+from requests import Response
+from typing import Any
 
 
 def create_context(test_spec: dict):
@@ -53,3 +55,37 @@ def search_files(current_path: str, item: str, files: list):
         for i in os.listdir(full_path):
             search_files(full_path, i, files)
     return files
+
+
+def content_type(response: Response) -> str:
+    """Extracts the media type from the response's Content-Type header.
+
+    Returns:
+        The media type without parameters, lowercased.
+        If the header is missing, returns an empty string.
+    """
+    ct = response.headers.get("content-type", "")
+    return ct.split(";")[0].strip().lower()
+
+
+def get_nested_value(data: Any, path: str) -> Any:
+    """Retrieve a value from a nested dict using dot notation.
+
+    Args:
+        data: A dictionary (or list) containing the data.
+        path: A dot-separated string representing the path (e.g., "user.email").
+
+    Returns:
+        The value at the given path.
+
+    Raises:
+        ValueError: If any component of the path does not exist.
+    """
+    keys = path.split(".")
+    current = data
+    for key in keys:
+        if isinstance(current, dict) and key in current:
+            current = current[key]
+        else:
+            raise ValueError(f"Path component '{key}' not found in {current}")
+    return current

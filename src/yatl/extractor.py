@@ -3,6 +3,7 @@ from typing import Any
 import json
 import re
 from lxml import etree
+from .utils import content_type, get_nested_value
 
 
 class DataExtractor:
@@ -15,41 +16,6 @@ class DataExtractor:
     def __init__(self):
         """Initializes the data extractor."""
         pass
-
-    def _content_type(self, response: Response) -> str:
-        """Extracts the media type from the response's Content-Type header.
-
-        Args:
-            response: The HTTP response object.
-
-        Returns:
-            The media type (e.g., 'application/json') without parameters,
-            lowercased. If the header is missing, returns an empty string.
-        """
-        ct = response.headers.get("content-type", "")
-        return ct.split(";")[0].strip().lower()
-
-    def _get_nested_value(self, data: Any, path: str) -> Any:
-        """Retrieve a value from a nested dict using dot notation.
-
-        Args:
-            data: A dictionary (or list) containing the data.
-            path: A dot-separated string representing the path (e.g., "user.email").
-
-        Returns:
-            The value at the given path.
-
-        Raises:
-            ValueError: If any component of the path does not exist.
-        """
-        keys = path.split(".")
-        current = data
-        for key in keys:
-            if isinstance(current, dict) and key in current:
-                current = current[key]
-            else:
-                raise ValueError(f"Path component '{key}' not found in {current}")
-        return current
 
     def _extract_json(
         self,
@@ -87,7 +53,7 @@ class DataExtractor:
             else:
                 # Path may be a dot‑notation string
                 try:
-                    extracted[key] = self._get_nested_value(data, path)
+                    extracted[key] = get_nested_value(data, path)
                 except ValueError as e:
                     raise ValueError(f"Failed to extract '{key}' at path '{path}': {e}")
         return extracted
@@ -173,12 +139,12 @@ class DataExtractor:
         Returns:
             One of 'json', 'xml', 'text', or 'unknown'.
         """
-        content_type = self._content_type(response)
-        if "json" in content_type:
+        cnt_type = content_type(response)
+        if "json" in cnt_type:
             return "json"
-        if "xml" in content_type:
+        if "xml" in cnt_type:
             return "xml"
-        if "text/plain" in content_type or "text/html" in content_type:
+        if "text/plain" in cnt_type or "text/html" in cnt_type:
             return "text"
 
         # No clear header – attempt to parse as JSON
