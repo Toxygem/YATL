@@ -34,26 +34,28 @@ def load_yaml_test(path_file: str):
         return yaml.safe_load(f)
 
 
-def search_files(current_path: str, item: str, files: list):
+def search_files(base_path: str) -> list[str]:
     """Recursively searches for test files with a .test.yaml/.test.yml suffix.
 
     Args:
-        current_path: Base directory for the search.
-        item: Current file or directory name relative to `current_path`.
-        files: Accumulator list where found file paths are appended.
+        base_path: Base directory for the search.
 
     Returns:
-        The same `files` list (modified in-place).
+        List of found file paths.
     """
-    full_path = os.path.join(current_path, item)
-    if os.path.isfile(full_path) and (
-        item.endswith(".test.yaml") or item.endswith(".test.yml")
-    ):
-        files.append(full_path)
-        return
-    elif os.path.isdir(full_path):
-        for dir in os.listdir(full_path):
-            search_files(full_path, dir, files)
+    files = []
+
+    def _search(current_path: str):
+        for item in os.listdir(current_path):
+            full_path = os.path.join(current_path, item)
+            if os.path.isfile(full_path) and (
+                item.endswith(".test.yaml") or item.endswith(".test.yml")
+            ):
+                files.append(full_path)
+            elif os.path.isdir(full_path):
+                _search(full_path)
+
+    _search(base_path)
     return files
 
 

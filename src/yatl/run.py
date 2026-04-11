@@ -1,125 +1,87 @@
 import os
+import concurrent.futures
+import yaml
+from typing import Any
 from .step_executor import StepExecutor
 from .extractor import DataExtractor
 from .render import TemplateRenderer
-import concurrent.futures
 from .utils import create_context, search_files
-import yaml
-from typing import Any
 
 
-class TestLoader:
-    """Loads test specifications from YAML files."""
+def load_test_yaml(yaml_path: str) -> dict[Any, Any] | None:
+    """Loads and parses a YAML test file.
 
-    def __init__(self):
-        pass
+    Args:
+        yaml_path: Path to the .test.yaml or .test.yml file.
 
-    def load(self, yaml_path: str) -> dict[Any, Any] | None:
-        """Loads and parses a YAML test file.
-
-        Args:
-            yaml_path: Path to the .test.yaml or .test.yml file.
-
-        Returns:
-            The parsed YAML as a dictionary, or None if the file is empty.
-        """
-        with open(yaml_path, "r", encoding="utf-8") as f:
-            test_specification = yaml.safe_load(f)
-
-        if test_specification is None:
-            return None
-        return test_specification
-
-
-class SkipChecker:
-    """
-    Checks if a test or step is skipped based on the "skip" flag.
     Returns:
-        True if the test or step is skipped, False otherwise."""
+        The parsed YAML as a dictionary, or None if the file is empty.
+    """
+    with open(yaml_path, "r", encoding="utf-8") as f:
+        test_specification = yaml.safe_load(f)
+    return test_specification
 
-    def __init__(self):
-        """Initializes the skip checker."""
-        pass
 
-    def is_skipped_test(self, test_specification: dict[Any, Any]) -> bool:
-        """Checks if a test is skipped based on the "skip" flag.
+def is_skipped_test(test_specification: dict[Any, Any]) -> bool:
+    """Checks if a test is skipped based on the "skip" flag.
 
-        Args:
-            test_specification: The parsed YAML dictionary.
+    Args:
+        test_specification: The parsed YAML dictionary.
 
-        Returns:
-            True if the test is skipped, False otherwise.
-        """
-        if test_specification.get("skip", False):
-            return True
-        return False
+    Returns:
+        True if the test is skipped, False otherwise.
+    """
+    return test_specification.get("skip", False)
 
-    def is_skipped_step(self, step: dict[Any, Any]) -> bool:
-        """Checks if a step is skipped based on the "skip" flag.
 
-        Args:
-            step: The parsed YAML dictionary.
+def is_skipped_step(step: dict[Any, Any]) -> bool:
+    """Checks if a step is skipped based on the "skip" flag.
 
-        Returns:
-            True if the step is skipped, False otherwise.
-        """
-        if step.get("skip", False):
-            return True
-        return False
+    Args:
+        step: The parsed YAML dictionary.
+
+    Returns:
+        True if the step is skipped, False otherwise.
+    """
+    return step.get("skip", False)
 
 
 class Reporter:
-    """Reports the results of test executions."""
+    """Simple reporter that collects and prints messages."""
 
     def __init__(self):
-        """Initializes the reporter."""
         self.info = []
 
     def add_info(self, info: str) -> None:
-        """Adds an information message to the reporter.
-
-        Args:
-            info: The message to add.
-        """
         self.info.append(info)
 
     def print_info(self) -> None:
-        """Prints the information messages to the console."""
         for line in self.info:
             print(line)
 
 
-class ConcurrencyManager:
-    """Manages concurrency for test executions."""
+def run_tests_concurrently(runner, test_path: str = ".", max_workers: int = 10) -> None:
+    """Runs all tests in parallel.
 
-    def __init__(self, runner: Runner, max_workers: int = 10):
-        """Initializes the concurrency manager.
+    Args:
+        runner: Runner instance with a run_test method.
+        test_path: Path to directory containing test files.
+        max_workers: Maximum number of worker threads.
+    """
+    files = search_files(test_path)
+    if not files:
+        print(f"No .test.yaml files found in {test_path}")
+        return
 
-        Args:
-            max_workers: The maximum number of workers to use.
-        """
-        self.runner = runner
-        self.max_workers = max_workers
-        self.files = search_files(os.getcwd(), ".", [])
+    print(f"Found {len(files)} test file(s)")
 
-    def run_tests(self) -> None:
-        """Runs all tests in parallel.
-
-        Returns:
-            None
-        """
-
-        with concurrent.futures.ThreadPoolExecutor(
-            max_workers=self.max_workers
-        ) as executor:
-            futures = {
-                executor.submit(self.runner.run_test, file): file for file in self.files
-            }
-            for future in concurrent.futures.as_completed(futures):
-                try:
-                    future.result()
-                except Exception as e:
-                    print(f"Test {futures[future]} failed with error: {e}")
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(runner.run_test, file): file for file in files}
+        for future in concurrent.futures.as_completed(futures):
+            try:
+                future.result()
+            except Exception as e:
+                print(f"Test {futures[future]} failed with error: {e}")
 
 
 class Runner:
@@ -129,27 +91,18 @@ class Runner:
     and maintains a context that is passed between steps.
     """
 
-    def __init__(
-        self,
-        step_executor: StepExecutor,
-        reporter: Reporter,
-        skip_cheker: SkipChecker,
-        test_loader: TestLoader,
-    ):
+    def __init__(self, step_executor: StepExecutor):
         """Initializes the runner with required services.
 
         Args:
-            data_extractor: Used to extract values from HTTP responses.
-            template_render: Used to render templates in test steps.
+            step_executor: Executes individual test steps.
         """
         self.step_executor = step_executor
-        self.reporter = reporter
-        self.skip_cheker = skip_cheker
-        self.test_loader = test_loader
+        self.reporter = Reporter()
 
     def _execute_step(
         self,
-        step_number,
+        step_number: int,
         step: dict,
         context: dict,
     ) -> dict[Any, Any]:
@@ -165,7 +118,7 @@ class Runner:
         if step is None:
             return context
 
-        if self.skip_cheker.is_skipped_step(step):
+        if is_skipped_step(step):
             self.reporter.add_info(
                 f"Step {step_number}: {step.get('name', '')} skipped"
             )
@@ -184,14 +137,13 @@ class Runner:
         Args:
             yaml_path: Path to the test YAML file.
         """
-        test_specification = self.test_loader.load(yaml_path)
-
+        test_specification = load_test_yaml(yaml_path)
         if test_specification is None:
             return
 
         context = create_context(test_specification)
 
-        if self.skip_cheker.is_skipped_test(test_specification):
+        if is_skipped_test(test_specification):
             self.reporter.add_info(f"Test {test_specification.get('name', '')} skipped")
             self.reporter.print_info()
             return
@@ -207,11 +159,5 @@ class Runner:
 
 
 if __name__ == "__main__":
-    runner = Runner(
-        StepExecutor(DataExtractor(), TemplateRenderer()),
-        Reporter(),
-        SkipChecker(),
-        TestLoader(),
-    )
-    concurrency_manager = ConcurrencyManager(runner, max_workers=10)
-    concurrency_manager.run_tests()
+    runner = Runner(StepExecutor(DataExtractor(), TemplateRenderer()))
+    run_tests_concurrently(runner, max_workers=10)

@@ -1,0 +1,10 @@
+name: skippped_test
+base_url: google.com
+skip: true
+
+steps:
+  - name: skipped_test_step
+    request:
+      method: GET
+    expect:
+      status: 200

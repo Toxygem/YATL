@@ -5,6 +5,43 @@ from .request_builder import RequestBuilder
 from typing import Any, Dict
 
 
+def execute_step(
+    step: Dict[str, Any],
+    context: Dict[str, Any],
+    data_extractor: DataExtractor,
+    template_renderer: TemplateRenderer,
+) -> Dict[str, Any]:
+    """Executes a single test step and returns the updated context.
+
+    The step is first rendered with the current context, then the request
+    is sent. If the step contains an `expect` block, the response is validated.
+    If it contains an `extract` block, values are extracted and added to the
+    context for subsequent steps.
+
+    Args:
+        step: The raw step dictionary (may contain templates).
+        context: The current context (global variables).
+        data_extractor: Used to extract values from responses.
+        template_renderer: Used to render templates in the step.
+
+    Returns:
+        The updated context (with newly extracted values, if any).
+    """
+    resolved_step = template_renderer.render_data(step, context)
+    request_builder = RequestBuilder(context, resolved_step)
+    response = request_builder.send_request()
+
+    if "expect" in resolved_step:
+        validator = ResponseValidator(response, resolved_step["expect"])
+        validator.check_expectations()
+
+    if "extract" in resolved_step:
+        extracted = data_extractor.extract(response, resolved_step["extract"])
+        context.update(extracted)
+
+    return context
+
+
 class StepExecutor:
     """Executes a single test step.
 
@@ -32,28 +69,11 @@ class StepExecutor:
     def run_step(self, step: Dict[str, Any], context: Dict[str, Any]) -> Dict[str, Any]:
         """Executes a single test step and returns the updated context.
 
-        The step is first rendered with the current context, then the request
-        is sent. If the step contains an `expect` block, the response is validated.
-        If it contains an `extract` block, values are extracted and added to the
-        context for subsequent steps.
-
-        Args:
-            step: The raw step dictionary (may contain templates).
-            context: The current context (global variables).
-
-        Returns:
-            The updated context (with newly extracted values, if any).
+        Delegates to the execute_step function.
         """
-        resolved_step = self.template_renderer.render_data(step, context)
-        request_builder = RequestBuilder(context, resolved_step)
-        response = request_builder.send_request()
-
-        if "expect" in resolved_step:
-            validator = ResponseValidator(response, resolved_step["expect"])
-            validator.check_expectations()
-
-        if "extract" in resolved_step:
-            extracted = self.data_extractor.extract(response, resolved_step["extract"])
-            context.update(extracted)
-
-        return context
+        return execute_step(
+            step,
+            context,
+            self.data_extractor,
+            self.template_renderer,
+        )

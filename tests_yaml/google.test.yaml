@@ -1,0 +1,23 @@
+name: test codeforces
+base_url: google.com
+
+steps:
+  - name: simple_test
+    request:
+      method: GET
+    expect:
+      status: 200
+    
+  - name: skipped_test_step
+    skip: true
+    request:
+      method: GET
+    expect:
+      status: 200
+      
+  - name: failed_test_step
+    request:
+      method: GET
+      url: /not_found
+    expect:
+      status: 200
