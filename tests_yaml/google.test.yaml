@@ -1,4 +1,4 @@
-name: test google
+name: ping
 base_url: google.com
 
 steps:

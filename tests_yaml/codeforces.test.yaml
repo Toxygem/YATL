@@ -1,4 +1,4 @@
-name: test codeforces
+name: codeforces API
 base_url: codeforces.com
 user_name: MikeMirzayanov
 
