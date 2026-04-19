@@ -80,7 +80,7 @@ def extract_request_params(
     """Extracts request parameters from the request data dictionary.
 
     Returns:
-        Tuple of (method, url, timeout, headers, params, cookies, body)
+        tuple of (method, url, timeout, headers, params, cookies, body)
     """
     method = str(request_data.get("method", "GET")).upper()
     url: str = request_data.get("url", "")

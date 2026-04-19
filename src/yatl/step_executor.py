@@ -2,15 +2,15 @@ from .render import TemplateRenderer
 from .extractor import DataExtractor
 from .validator import ResponseValidator
 from .request_builder import send_request
-from typing import Any, Dict
+from typing import Any
 
 
 def execute_step(
-    step: Dict[str, Any],
-    context: Dict[str, Any],
+    step: dict[str, Any],
+    context: dict[str, Any],
     data_extractor: DataExtractor,
     template_renderer: TemplateRenderer,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Executes a single test step and returns the updated context.
 
     The step is first rendered with the current context, then the request
@@ -65,7 +65,7 @@ class StepExecutor:
         self.data_extractor = data_extractor
         self.template_renderer = template_renderer
 
-    def run_step(self, step: Dict[str, Any], context: Dict[str, Any]) -> Dict[str, Any]:
+    def run_step(self, step: dict[str, Any], context: dict[str, Any]) -> dict[str, Any]:
         """Executes a single test step and returns the updated context.
 
         Delegates to the execute_step function.
