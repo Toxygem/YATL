@@ -29,7 +29,7 @@ steps:
 Run it:
 
 ```bash
-yatl ping.yatl.yaml
+yatl
 ```
 
 That’s it!
