@@ -12,7 +12,6 @@ YATL is a lightweight testing framework designed for API testing using YAML-base
 6. [Templating with Jinja2](#templating-with-jinja2)
 7. [Running Tests](#running-tests)
 8. [Examples](#examples)
-9. [Advanced Features](#advanced-features)
 
 ## Getting Started
 
@@ -430,30 +429,6 @@ steps:
         text: "Hello"
 ```
 
-## Advanced Features
-
-### Conditional Steps
-
-Currently, YATL does not support conditional steps natively, but you can achieve conditional logic by writing separate test files.
-
-### Retry Logic
-
-Not built-in; consider using external tools like `pytest` with retry decorators.
-
-### Environment Variables
-
-You can use environment variables in templates via Jinja2's `os.environ`:
-
-```yaml
-request:
-  url: {{ os.environ.get("API_BASE_URL") }}/endpoint
-```
-
-### Custom Validators
-
-Extend the `ResponseValidator` class to add custom validation logic.
-
-## Troubleshooting
 
 ### Common Errors
 
@@ -461,9 +436,6 @@ Extend the `ResponseValidator` class to add custom validation logic.
 - **JSON extraction fails**: Verify the path exists in the response.
 - **Templating errors**: Check that variables are defined in the context.
 
-### Debugging
-
-Enable verbose logging by modifying `run.py` or using the `print` statements already present.
 
 ## Contributing
 
