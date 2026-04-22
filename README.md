@@ -29,7 +29,7 @@ steps:
 Run it:
 
 ```bash
-yatl
+yatl .
 ```
 
 That’s it!
@@ -94,12 +94,10 @@ steps:
 
 ```bash
 # Run all `.yatl.yaml` files in a directory
-yatl tests/
+yatl .
 
-# Run a single file
-yatl myapi.yatl.yaml
 
-# Run with 5 parallel workers
+# Run with 5 parallel workers on `tests/` directory
 yatl tests/ --workers 5
 ```
 

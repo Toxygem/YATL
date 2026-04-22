@@ -22,7 +22,7 @@ def create_context(test_spec: dict):
 
 
 def search_files(base_path: str) -> list[str]:
-    """Recursively searches for test files with a .test.yaml/.test.yml suffix.
+    """Recursively searches for test files with a .yatl.yaml/.yatl.yml suffix.
 
     Args:
         base_path: Base directory for the search.
