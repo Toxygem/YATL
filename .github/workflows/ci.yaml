@@ -47,7 +47,7 @@ jobs:
       - name: run tests
         run: poetry run pytest
 
-  yaml_tests:
+  integration_tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -60,4 +60,4 @@ jobs:
         run: pip install yatl-testing
 
       - name: run tests
-        run: yatl ./tests_yaml
+        run: yatl ./integration_tests
