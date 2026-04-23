@@ -137,3 +137,7 @@ YATL fits seamlessly into CI pipelines. Example GitHub Actions workflow:
 - name: Run YATL tests
   run: yatl tests/ --workers 5
 ```
+
+---
+
+> If you find this project useful, please [star it on GitHub](https://github.com/Khabib73/YATL). It really motivates me! ⭐️
