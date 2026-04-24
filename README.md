@@ -192,8 +192,20 @@ Full documentation is available in the [`docs/`](docs/) directory:
 YATL fits seamlessly into CI pipelines. Example GitHub Actions workflow:
 
 ```yaml
-- name: Run YATL tests
-  run: yatl tests/ --workers 5
+testing_api:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v4
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.14
+
+    - name: install yatl
+      run: pip install yatl-testing
+
+    - name: run tests
+      run: yatl ./api_tests
 ```
 
 ---
