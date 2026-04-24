@@ -12,18 +12,7 @@ from .colors import (
     header,
 )
 from .reporter import Reporter
-
-
-def is_skipped(item: dict[Any, Any]) -> bool:
-    """Checks if an item is skipped based on the "skip" flag.
-
-    Args:
-        item: The parsed YAML dictionary.
-
-    Returns:
-        True if the item is skipped, False otherwise.
-    """
-    return item.get("skip", False)
+from .utils import is_skipped
 
 
 def run_tests_concurrently(runner, test_path: str = ".", max_workers: int = 10) -> None:

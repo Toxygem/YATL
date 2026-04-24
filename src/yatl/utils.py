@@ -5,6 +5,18 @@ from requests import Response
 import yaml
 
 
+def is_skipped(item: dict[Any, Any]) -> bool:
+    """Checks if an item is skipped based on the "skip" flag.
+
+    Args:
+        item: The parsed YAML dictionary.
+
+    Returns:
+        True if the item is skipped, False otherwise.
+    """
+    return item.get("skip", False)
+
+
 def create_context(test_spec: dict):
     """Creates the initial context from the test specification.
 

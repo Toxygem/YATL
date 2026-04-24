@@ -1,5 +1,4 @@
-from src.yatl.utils import create_context, load_test_yaml, search_files
-from src.yatl.run import is_skipped
+from src.yatl.utils import create_context, load_test_yaml, search_files, is_skipped
 import pytest
 
 
