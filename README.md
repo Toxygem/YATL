@@ -36,7 +36,9 @@ That’s it!
 
 ---
 
-Consider another example, let's try to test a simple POST request to `https://api/users`:
+Consider another example, let's try to test a simple POST request:
+
+We will use FastAPI to create a simple API:
 
 ```python
 from fastapi import FastAPI
