@@ -1,15 +1,15 @@
-from .render import TemplateRenderer
 from .extractor import DataExtractor
 from .validator import ResponseValidator
 from .request_builder import send_request
 from typing import Any
+from .interface import ITemplateRenderer
 
 
 def execute_step(
     step: dict[str, Any],
     context: dict[str, Any],
     data_extractor: DataExtractor,
-    template_renderer: TemplateRenderer,
+    template_renderer: ITemplateRenderer,
 ) -> dict[str, Any]:
     """Executes a single test step and returns the updated context.
 
@@ -54,7 +54,7 @@ class StepExecutor:
     def __init__(
         self,
         data_extractor: DataExtractor,
-        template_renderer: TemplateRenderer,
+        template_renderer: ITemplateRenderer,
     ):
         """Initializes the step executor with required services.
 

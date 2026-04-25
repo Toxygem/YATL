@@ -1,0 +1,8 @@
+from typing import Protocol, Any
+from jinja2 import Template
+
+
+class ITemplateRenderer(Protocol):
+    def _get_template(self, template_str: str) -> Template: ...
+
+    def render_data(self, data: Any, context: dict[str, Any]): ...
