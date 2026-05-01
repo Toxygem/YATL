@@ -1,7 +1,9 @@
-import pytest
-from src.yatl.validator import BodyFormat, validate_json_body
-from requests import Response
 import json
+
+import pytest
+from requests import Response
+
+from src.yatl.validator import BodyFormat, validate_json_body
 
 
 def test_from_content_type_json():

@@ -1,9 +1,11 @@
-from requests import Response
-from typing import Any, Callable
 import json
-from lxml import etree
-from .utils import get_nested_value, get_content_type
 from enum import StrEnum
+from typing import Any, Callable
+
+from lxml import etree
+from requests import Response
+
+from .utils import get_content_type, get_nested_value
 
 
 class BodyFormat(StrEnum):

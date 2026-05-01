@@ -1,10 +1,12 @@
-from requests import Response
-from typing import Any
 import json
 import re
-from lxml import etree
-from .utils import get_nested_value, get_content_type
 from abc import ABC, abstractmethod
+from typing import Any
+
+from lxml import etree
+from requests import Response
+
+from .utils import get_content_type, get_nested_value
 
 
 class Extractor(ABC):

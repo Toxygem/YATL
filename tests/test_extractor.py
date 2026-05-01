@@ -1,4 +1,5 @@
 import pytest
+
 from src.yatl.utils import get_nested_value
 
 

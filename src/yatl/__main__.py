@@ -2,9 +2,9 @@
 
 import argparse
 
-from .run import Runner, run_tests_concurrently
 from .extractor import DataExtractor
 from .render import TemplateRenderer
+from .run import Runner, run_tests_concurrently
 from .validator import ResponseValidator
 
 

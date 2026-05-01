@@ -1,8 +1,10 @@
-from .extractor import DataExtractor
-from .request_builder import send_request
 from typing import Any, Callable
-from .interface import ITemplateRenderer, IResponseValidator
+
 from requests import Response
+
+from .extractor import DataExtractor
+from .interface import IResponseValidator, ITemplateRenderer
+from .request_builder import send_request
 
 
 def execute_step(

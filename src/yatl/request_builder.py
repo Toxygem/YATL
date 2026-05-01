@@ -1,5 +1,6 @@
 from typing import Any
-from requests import request, Response
+
+from requests import Response, request
 
 
 def send_request(context: dict[str, Any], resolved_step: dict[str, Any]) -> Response:

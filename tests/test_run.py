@@ -1,5 +1,6 @@
-from src.yatl.utils import create_context, load_test_yaml, search_files, is_skipped
 import pytest
+
+from src.yatl.utils import create_context, is_skipped, load_test_yaml, search_files
 
 
 def test_create_context_with_valid_data_returns_context(data):

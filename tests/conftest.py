@@ -1,8 +1,9 @@
 import pytest
+
 from src.yatl.extractor import DataExtractor
 from src.yatl.render import TemplateRenderer
-from src.yatl.validator import ResponseValidator
 from src.yatl.run import Runner
+from src.yatl.validator import ResponseValidator
 
 
 @pytest.fixture

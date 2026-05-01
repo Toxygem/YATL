@@ -1,6 +1,7 @@
 import os
-import yaml
 from typing import Any
+
+import yaml
 
 
 class LoadError(Exception):

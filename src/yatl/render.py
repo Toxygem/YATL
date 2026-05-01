@@ -1,6 +1,7 @@
-from jinja2 import Template
-from typing import Any
 import hashlib
+from typing import Any
+
+from jinja2 import Template
 
 
 class TemplateRenderer:
