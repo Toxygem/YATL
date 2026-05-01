@@ -1,9 +1,9 @@
 lint:
 	poetry run ruff check .
-	
+
 .PHONY: format
 format:
-	ruff check --select I --fix .
+	poetry run ruff check --select I --fix .
 	poetry run ruff format .
 
 typing:
