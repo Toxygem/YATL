@@ -1,3 +1,4 @@
+.PHONY: lint
 lint:
 	poetry run ruff check .
 
@@ -13,6 +14,7 @@ typing:
 integration_tests:
 	poetry run python -m src.yatl.run
 
+.PHONY: unit_tests
 unit_tests:
 	poetry run pytest
 
