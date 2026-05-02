@@ -71,7 +71,7 @@ def build_url(base_url: str, url: str) -> str:
     if not base_url.startswith("http"):
         base_url = "https://" + base_url
     if url.startswith("http"):
-        url = url.lstrip("https://")
+        return url
     return base_url.rstrip("/") + "/" + url.lstrip("/")
 
 
