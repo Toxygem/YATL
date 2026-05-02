@@ -10,7 +10,7 @@ def test_build_url_with_path():
 
 
 def test_build_url_with_http_prefix():
-    assert build_url("google.com", "https:api/v1") == "https://google.com/api/v1"
+    assert build_url("google.com", "https://api/v1") == "https://api/v1"
 
 
 def test_extract_request_params():

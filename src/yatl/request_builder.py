@@ -65,13 +65,17 @@ def build_url(base_url: str, url: str) -> str:
 
     Returns:
         The absolute URL. If the context contains a `base_url`, it is
-        prepended (with proper slash handling). If `url` is already absolute,
-        the base URL is ignored (but currently not implemented).
+        prepended (with proper slash handling). If `url` is already absolute, the base URL is ignored
     """
+    if url.startswith("http://") or url.startswith("https://"):
+        return url
+
+    if not base_url:
+        return url
+
     if not base_url.startswith("http"):
         base_url = "https://" + base_url
-    if url.startswith("http"):
-        url = url.lstrip("https://")
+
     return base_url.rstrip("/") + "/" + url.lstrip("/")
 
 
