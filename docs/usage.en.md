@@ -4,16 +4,13 @@ YATL is a lightweight testing framework designed for API testing using YAML-base
 
 ## Table of Contents
 
-1. [Getting Started](#getting-started)
-2. [Test Structure](#test-structure)
-3. [HTTP Request Specification](#http-request-specification)
-4. [Response Validation](#response-validation)
-5. [Data Extraction](#data-extraction)
-6. [Templating with Jinja2](#templating-with-jinja2)
-7. [Running Tests](#running-tests)
-8. [Examples](#examples)
-
-## Getting Started
+1. [Test Structure](#test-structure)
+2. [HTTP Request Specification](#http-request-specification)
+3. [Response Validation](#response-validation)
+4. [Data Extraction](#data-extraction)
+5. [Templating with Jinja2](#templating-with-jinja2)
+6. [Running Tests](#running-tests)
+7. [Examples](#examples)
 
 ## Test Structure
 
@@ -331,28 +328,7 @@ steps:
 
 ## Running Tests
 
-### Command Line
-
-The simplest way to run tests is via the built-in runner:
-
-```bash
-python -m src.yatl.run
-```
-
-This will recursively search for files ending with `.yatl.yaml` or `.yatl.yml` in the current directory and run them.
-
-### Programmatic Usage
-
-You can also integrate YATL into your Python scripts:
-
-```python
-from yatl.run import Runner
-from yatl.extractor import DataExtractor
-from yatl.render import TemplateRenderer
-
-runner = Runner(DataExtractor(), TemplateRenderer())
-runner.run_test("path/to/yatl.yaml")
-```
+Tests are run with the `yatl` command from the project root. It automatically discovers all `.yatl.yaml` or `.yatl.yml` files and executes them.
 
 ## Examples
 
