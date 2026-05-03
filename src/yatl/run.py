@@ -104,8 +104,6 @@ class Runner:
 
             if step.get("description"):
                 reporter.add_info(info(f"description: {step['description']}"))
-            elif step.get("desc"):
-                reporter.add_info(info(f"description: {step['desc']}"))
 
             return execute_step(
                 step,
