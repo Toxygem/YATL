@@ -146,26 +146,3 @@ def _set_content_type(headers: dict[str, str], content_type: str) -> None:
     """
     if "Content-Type" not in headers:
         headers["Content-Type"] = content_type
-
-
-class RequestBuilder:
-    """Legacy class for building request arguments.
-
-    Deprecated: Use the module-level functions instead.
-    """
-
-    def __init__(self, context: dict[str, Any], resolved_step: dict[str, Any]):
-        self.context = context
-        self.resolved_step = resolved_step
-
-    def send_request(self) -> Response:
-        """Builds and sends the HTTP request described by the step."""
-        return send_request(self.context, self.resolved_step)
-
-    def build_request_data(self) -> dict[str, Any]:
-        """Produces the keyword arguments for `requests.request`."""
-        return build_request_data(self.context, self.resolved_step)
-
-    def build_url(self, url: str) -> str:
-        """Constructs a full URL by prepending the base URL from context."""
-        return build_url(self.context.get("base_url", ""), url)
