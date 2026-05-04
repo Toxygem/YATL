@@ -1,6 +1,7 @@
 import json
+from collections.abc import Callable
 from enum import StrEnum
-from typing import Any, Callable
+from typing import Any
 
 from lxml import etree
 from requests import Response
