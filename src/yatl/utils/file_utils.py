@@ -32,7 +32,7 @@ def load_test_yaml(file_path: str) -> dict[str, str | int | list[Any]] | bool:
         The parsed YAML as a dictionary, or False if the file is not found."
     """
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             test_specification = yaml.safe_load(f)
             if not test_specification:
                 test_specification = {}
