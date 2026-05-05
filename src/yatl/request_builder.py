@@ -1,6 +1,7 @@
+import requests
 from typing import Any
-
 from requests import Response, request
+from yatl.exceptions import YATLRequestError
 
 
 def send_request(context: dict[str, Any], resolved_step: dict[str, Any]) -> Response:
@@ -12,10 +13,24 @@ def send_request(context: dict[str, Any], resolved_step: dict[str, Any]) -> Resp
 
     Returns:
         The HTTP response object.
+
+    Raises:
+        YATLRequestError: If a network-level error occurs (timeout or
+            connection failure).
     """
     request_data = build_request_data(context, resolved_step)
-    response = request(**request_data)
-    return response
+    try:
+        response = request(**request_data)
+        return response
+    except requests.exceptions.Timeout as e:
+        raise YATLRequestError(
+            f"Request timed out: {request_data['method']} {request_data['url']}"
+        ) from e
+    except requests.exceptions.ConnectionError as e:
+        raise YATLRequestError(
+            f"Connection failed: {request_data['method']} {request_data['url']}"
+        ) from e
+
 
 
 def build_request_data(
