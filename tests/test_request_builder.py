@@ -69,14 +69,29 @@ RESOLVED_STEP = {
     }
 }
 
-
-def test_send_request_raises_yatl_request_error_on_timeout():
-    "Test that send_request raises YATLRequestError on timeout."
+def test_send_request_raises_yatl_request_error_on_timeout_without_value():
+    "Test that send_request raises YATLRequestError on timeout with no timeout set."
     with patch("src.yatl.request_builder.request") as mock_request:
         mock_request.side_effect = requests.exceptions.Timeout()
 
-        with pytest.raises(YATLRequestError, match="Request timed out: GET"):
+        with pytest.raises(YATLRequestError, match="Request timed out \\(no explicit timeout set\\): GET"):
             send_request(CONTEXT, RESOLVED_STEP)
+
+
+def test_send_request_raises_yatl_request_error_on_timeout_with_value():
+    "Test that send_request raises YATLRequestError on timeout with timeout value."
+    resolved_step_with_timeout = {
+        "request": {
+            "method": "GET",
+            "url": "/users",
+            "timeout": 30,
+        }
+    }
+    with patch("src.yatl.request_builder.request") as mock_request:
+        mock_request.side_effect = requests.exceptions.Timeout()
+
+        with pytest.raises(YATLRequestError, match="Request timed out after 30s: GET"):
+            send_request(CONTEXT, resolved_step_with_timeout)
 
 
 def test_send_request_raises_yatl_request_error_on_connection_error():
